@@ -22,7 +22,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
       navigationBar: CupertinoNavigationBar(),
       child: ListView(
         children: <Widget>[
-          _buildCompanyBox(widget.user.company),
+          _buildCompanyBox(context, widget.user.company),
           _buildUserView(widget.user),
         ],
       ),
@@ -36,36 +36,45 @@ class _UserDetailPageState extends State<UserDetailPage> {
         children: <Widget>[
           _buildContactRow(CupertinoIcons.mail, user.email.toLowerCase()),
           _buildContactRow(CupertinoIcons.phone, user.phone.toLowerCase()),
-          CupertinoButton.filled(
-            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
-            child: _buildContactRow(
-                CupertinoIcons.location, _addressSummary(user.address)),
-            onPressed: () async {
-              final pos = user.address.geo;
-              final url =
-                  "https://www.google.com/maps/@${pos.lat},${pos.lng},4z";
-              print(url);
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
-                throw 'Could not launch $url';
-              }
-            },
-          ),
+          const SizedBox(height: 5),
+          _buildAddressButton(user.address),
         ],
       ),
     );
   }
 
-  static Widget _buildCompanyBox(Company company) {
+  static Widget _buildAddressButton(Address address) {
+    return CupertinoButton.filled(
+      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+      child:
+          _buildContactRow(CupertinoIcons.location, _addressSummary(address)),
+      onPressed: () async {
+        final pos = address.geo;
+        final url = "https://www.google.com/maps/@${pos.lat},${pos.lng},4z";
+        print(url);
+        if (await canLaunch(url)) {
+          await launch(url);
+        } else {
+          throw 'Could not launch $url';
+        }
+      },
+    );
+  }
+
+  static Widget _buildCompanyBox(BuildContext context, Company company) {
+    final isLight = CupertinoTheme.of(context).brightness == Brightness.light;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-            color: CupertinoColors.extraLightBackgroundGray,
+            color: isLight
+                ? CupertinoColors.extraLightBackgroundGray
+                : CupertinoColors.darkBackgroundGray,
             borderRadius: BorderRadius.all(Radius.circular(12)),
             border: Border.all(
-              color: CupertinoColors.darkBackgroundGray,
+              color: isLight
+                  ? CupertinoColors.darkBackgroundGray
+                  : CupertinoColors.extraLightBackgroundGray,
             )),
         child: Padding(
           padding:
