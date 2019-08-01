@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cupertino_example/data/clients/http_client.dart';
 import 'package:flutter_cupertino_example/data/errors/web_exceptions.dart';
@@ -16,7 +18,7 @@ class UserSourceWeb implements UserSource {
 
   @override
   Future<JsonString> getUserList() async {
-    final response = await _httpClient.get(_buildGetUserListUrl());
+    final response = await _httpClient.get(_getUserListUrl);
     if (response.statusCode == 401) {
       throw UnauthorizedException(response.body);
     }
@@ -29,7 +31,7 @@ class UserSourceWeb implements UserSource {
     return compute(_constructJsonString, response.body);
   }
 
-  String _buildGetUserListUrl() => 'https://jsonplaceholder.typicode.com/users';
+  String get _getUserListUrl => 'https://jsonplaceholder.typicode.com/users';
 
   static JsonString _constructJsonString(String responseBody) {
     return JsonString(responseBody, enableCache: true);

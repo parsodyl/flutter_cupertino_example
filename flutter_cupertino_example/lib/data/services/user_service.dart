@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_cupertino_example/data/sources/user_source.dart';
 import 'package:flutter_cupertino_example/entities/user.dart';
 import 'package:json_string/json_string.dart';
